@@ -47,7 +47,7 @@ parseCubeData <- \(col) {
     .[,-1] -> middle 
   
   for (i in 1:nrow(middle)) {
-    barve[middle[i,2]] <- barve[middle[i,2]] + as.numeric(middle[i,1])
+    barve[middle[i,2]] <- as.numeric(middle[i,1])
   }
   
   return(barve[1:3])
