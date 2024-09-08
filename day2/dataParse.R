@@ -81,21 +81,17 @@ for (game in 1:100) {
   okGame <- TRUE
   i <- 1
   
-  
   while (i < 19) {
     cols <- c(i, i+2)
     kocke <- parseCubeData(col = df[game, cols[1]:cols[2]])
-
+    i <- i+3
+    
     if (dosezenLimit(kocke)) {
-      print(game)
-      print("dosežen limit.")
+      print(paste("Game:", game, "dosežen limit."))
       okGame <- FALSE
-      i <- i+3
       break
     }
-    
-    i <- i+3
-    }
+  }
 
   if (!okGame) {
     okIgre[game] <- 0
