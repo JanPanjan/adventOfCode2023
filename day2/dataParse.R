@@ -41,7 +41,8 @@ df %>% as_tibble()
 parseCubeData <- \(col) {
   barve <- c(blue=0, green=0, red=0)
   col <- as.character(col)
-  
+
+  # vrne matriko
   str_split(col, " ", n=3, simplify = T) %>% 
     .[,-1] -> middle 
   
