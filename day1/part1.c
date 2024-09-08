@@ -2,8 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 
-int main() {
-	/*
+/* PART I
 * combine first and last digit on each line to form a single two digit number (glej example)
 * 	- prva in zadnja
 * 	- če je ena, jo vzami dvakrat
@@ -11,6 +10,13 @@ int main() {
 * kako preberem datoteko v C-ju...
 * got it
 */
+
+/* PART II 
+* naredu bom z R-jem :D
+*/
+
+
+int main() {
 
 	FILE *data = fopen("data.txt", "r");
 
