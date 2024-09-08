@@ -102,3 +102,8 @@ for (game in 1:100) {
 sum(okIgre) -> out
 write.table(out, "odgovor.txt", row.names = F, col.names = F)
 
+
+### DRUGI DEL ###
+
+
+
