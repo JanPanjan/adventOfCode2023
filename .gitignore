@@ -1,4 +1,4 @@
 *.obj
 *.exe
-.RData
-.Rhistory
+\.RData
+\.Rhistory

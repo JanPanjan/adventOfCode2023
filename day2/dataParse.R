@@ -101,3 +101,4 @@ for (game in 1:100) {
 # sum okIgre je naša rešitev
 sum(okIgre) -> out
 write.table(out, "odgovor.txt", row.names = F, col.names = F)
+
