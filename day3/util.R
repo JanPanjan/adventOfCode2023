@@ -1,11 +1,13 @@
 library(tidyverse)
+
 # reads text file by filename
 # returns vector
 readFile <- \(filename) {
 	file <- read.delim(filename, header=F) |>
 		unlist() |>
 		setNames(NULL)
-	
+
+	print(file)
 	return(file)
 }
 
@@ -21,10 +23,12 @@ makeDataMatrix <- \(vec) {
 		}
 	}
 
+	print(mat)
 	return(mat)
 }
 
 # makes data frame by spliting every character in vec
+# trenutno unused
 makeDf <- \(vec) {
 	listData <- strsplit(vec, split="")
 	len <- length(listData)
@@ -40,7 +44,7 @@ makeDf <- \(vec) {
 }
 
 # funkcija vrne matriko indeksov od vseh validnih simbolov
-getSymbols <- \(dataMatrix) {
+getSymbolIndexes <- \(dataMatrix) {
 	regex <- c("[#|$|%|&|/|=|?|*|+|-|@]")
 	rows  <- nrow(dataMatrix)
 	cols  <- ncol(dataMatrix)
@@ -49,13 +53,14 @@ getSymbols <- \(dataMatrix) {
 	for (i in 1:rows) {
 		for (j in 1:cols) {
 			if (str_detect(dataMatrix[i,j], regex)) {
-				print(paste(i,j))
 				idMatrix[i,1] <- i
 				idMatrix[i,2] <- j
 			}
 		}
 	}
 
+	idMatrix <- optimizeMatrix(idMatrix)
+	print(idMatrix)
 	return(idMatrix)
 }
 
@@ -79,8 +84,63 @@ optimizeMatrix <- \(matrika) {
 	return(novaMatrika)
 }
 
-# funkcija preveri, če je vodoravno od simbola število
-checkHorizontal <- \() {
+# funkcija dobi število ob znaku
+# line je vrstica v matriki
+getNumber <- \(line) {
+	print(line)
+
+	st <- regmatches(x=line, m=gregexpr(pattern="\\d", text=line)) %>%
+		unlist() %>%
+		paste0(collapse="") %>%
+		as.numeric()
+
+	ifelse(is.na(st), return(0), return(st))
+}
+
+# funkcija vrne za koliko mest nazaj lahko gledamo
+# če smo v 2. stolpcu, lahko gledamo nazaj samo 1 znak npr.
+# dobimo vrednost med 0 in 3, ker so največ trimestna števila
+getPremik <- \(matrika, colNum) {
+	maxCol <- ncol(matrika)
+
+	premik <- maxCol - (ncol(matrika[,colNum:maxCol]))
+
+	# max premik je za 3 mesta
+	ifelse(premik>=3, return(3), return(premik))
+}
+
+# funkcija preveri, če je vodoravno levo od simbola število
+# simbolIndeks je vrstica v matriki indeksov:
+# prvi col je row, drugi col je col simbola
+checkHorizontalLeft <- \(matrika, simbolIndeks) {
+	row <- simbolIndeks[1]
+	col <- simbolIndeks[2]
+	print(paste("zacetni col:", col))
+
+	# preverimo v levo max 3 mesta (max trimestna števila)
+	premik <- getPremik(matrika=matrika, colNum=col)
+	print(paste("premik", premik))
+
+	# če se ne moremo premakniti, vrnemo 0
+	if (premik == 0) {
+		return(0)
+	}
+
+	# če se lahko premaknemo, dobimo število
+	prviCol <- col - premik
+	drugiCol <- col - 1
+
+	print(paste(prviCol, drugiCol))
+	print(matrika[row,prviCol:drugiCol])
+
+	st <- getNumber(line = matrika[row,prviCol:drugiCol])
+	print(st)
+
+	return(st)
+}
+
+# funkcija preveri, če je vodoravno desno od simbola število
+checkHorizontalRight <- \(matrika, simbolIndeks) {
 
 }
 
@@ -109,7 +169,3 @@ checkTopRightDiagonal <- \() {
 
 }
 
-# funkcija dobi število ob znaku
-getNumber <- \() {
-
-}
