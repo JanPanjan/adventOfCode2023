@@ -26,7 +26,7 @@ parseFileData <- \(filename) {
 # - min blue: 6
 # - min green: 2
 getMinSetPower <- \(currentMinValues, newValues) {
-  for (i in 1:lenght(currentMinValues) {
+  for (i in 1:length(currentMinValues) {
     if (currentMinValues[i] < newValues[i]) {
       currentMinValues[i] <- newValues[i]
     }
