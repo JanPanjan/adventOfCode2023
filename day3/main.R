@@ -11,18 +11,5 @@ mat <- makeDataMatrix(file)
 # matrika ki bo hranila indekse simbolov
 ids <- getSymbolIndexes(mat)
 
-mat[1, ] %>%
-    paste0(collapse = "") %>%
-    str_sub(-1, 2)
-
-getPremik(mat, 1)
-ids[2, ]
-checkHorizontalLeft(matrika = mat, simbolIndeks = ids[2, ])
-mat
-ids
-getNumber("46")
-regmatches(x = "...", gregexpr(pattern = "\\d", text = "...")) %>%
-    unlist() %>%
-    paste0(collapse = "") %>%
-    as.numeric()
-getNumber("...")
+checkHorizontalLeft(matrika = mat, simbolIndeks = ids[3, ])
+checkHorizontalRight(matrika = mat, simbolIndeks = ids[3, ])

@@ -27,22 +27,6 @@ makeDataMatrix <- \(vec) {
 	return(mat)
 }
 
-# makes data frame by spliting every character in vec
-# trenutno unused
-makeDf <- \(vec) {
-	listData <- strsplit(vec, split="")
-	len <- length(listData)
-	df <- data.frame()
-
-	for (i in 1:len) {
-		for (j in 1:len) {
-			df[i,j] <- listData[[i]][j]
-		}
-	}
-
-	return(df)
-}
-
 # funkcija vrne matriko indeksov od vseh validnih simbolov
 getSymbolIndexes <- \(dataMatrix) {
 	regex <- c("[#|$|%|&|/|=|?|*|+|-|@]")
@@ -87,8 +71,6 @@ optimizeMatrix <- \(matrika) {
 # funkcija dobi število ob znaku
 # line je vrstica v matriki
 getNumber <- \(line) {
-	print(line)
-
 	st <- regmatches(x=line, m=gregexpr(pattern="\\d", text=line)) %>%
 		unlist() %>%
 		paste0(collapse="") %>%
@@ -97,15 +79,19 @@ getNumber <- \(line) {
 	ifelse(is.na(st), return(0), return(st))
 }
 
-# funkcija vrne za koliko mest nazaj lahko gledamo
+# funkcija vrne za koliko mest nazaj ali naprej lahko gledamo
 # če smo v 2. stolpcu, lahko gledamo nazaj samo 1 znak npr.
 # dobimo vrednost med 0 in 3, ker so največ trimestna števila
-getPremik <- \(matrika, colNum) {
+# smer je bodisi "L"-levo, bodisi "D"-desno
+getPremik <- \(matrika, colNum, smer) {
 	maxCol <- ncol(matrika)
 
-	premik <- maxCol - (ncol(matrika[,colNum:maxCol]))
+	premik <- case_when(
+		smer == "L" ~ maxCol - (ncol(matrika[,colNum:maxCol])),
+		smer == "D" ~ maxCol - (ncol(matrika[,1:colNum])),
+		.default = 0
+	)
 
-	# max premik je za 3 mesta
 	ifelse(premik>=3, return(3), return(premik))
 }
 
@@ -115,33 +101,36 @@ getPremik <- \(matrika, colNum) {
 checkHorizontalLeft <- \(matrika, simbolIndeks) {
 	row <- simbolIndeks[1]
 	col <- simbolIndeks[2]
-	print(paste("zacetni col:", col))
+	premik <- getPremik(matrika=matrika, colNum=col, smer="L")
 
-	# preverimo v levo max 3 mesta (max trimestna števila)
-	premik <- getPremik(matrika=matrika, colNum=col)
-	print(paste("premik", premik))
-
-	# če se ne moremo premakniti, vrnemo 0
 	if (premik == 0) {
 		return(0)
 	}
 
-	# če se lahko premaknemo, dobimo število
 	prviCol <- col - premik
 	drugiCol <- col - 1
-
-	print(paste(prviCol, drugiCol))
-	print(matrika[row,prviCol:drugiCol])
-
 	st <- getNumber(line = matrika[row,prviCol:drugiCol])
-	print(st)
 
 	return(st)
 }
 
 # funkcija preveri, če je vodoravno desno od simbola število
+# simbolIndeks je vrstica v matriki indeksov:
+# prvi col je row, drugi col je col simbola
 checkHorizontalRight <- \(matrika, simbolIndeks) {
+	row <- simbolIndeks[1]
+	col <- simbolIndeks[2]
+	premik <- getPremik(matrika=matrika, colNum=col, smer="D")
 
+	if (premik == 0) {
+		return(0)
+	}
+
+	prviCol <- col + 1
+	drugiCol <- ncol(matrika)
+	st <- getNumber(line = matrika[row,prviCol:drugiCol])
+
+	return(st)
 }
 
 # funkcija preveri, če je vertikalno od simbola število
