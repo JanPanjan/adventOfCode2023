@@ -8,8 +8,14 @@ file <- readFile(filename = "testData.txt")
 # za ta primer je matrika v redu, ker imamo enako dolge vrstice podatkov
 mat <- makeDataMatrix(file)
 
-# matrika ki bo hranila indekse simbolov
-ids <- getSymbolIndexes(mat)
-
-checkHorizontalLeft(matrika = mat, simbolIndeks = ids[3, ])
-checkHorizontalRight(matrika = mat, simbolIndeks = ids[3, ])
+# v bistvu, bomo iskali števila. če najdemo simbol okoli števila, ga dodamo.
+for (i in 1:ncol(mat)) {
+    for (j in 1:nrow(mat)) {
+        niz <- mat[i, j]
+        if (isDigit(mat[i, j])) {
+            print(niz)
+            print(isNumberValid(mat, i, j))
+            # sus behaviour
+        }
+    }
+}
