@@ -25,13 +25,22 @@ makeDataMatrix <- \(vec) {
     return(mat)
 }
 
-# funkcija doda vrednost v matriko indeksov
+# funkcija doda vrednosti v matriko indeksov
+#   - matId
 #   - mat
 #   - row
 #   - col
-addToMat <- \(mat, row, col, st) {
-    mat <- rbind(mat, c(row, col, st))
-    return(mat)
+#   - num_len
+addToMat <- \(matId, mat, row, col, num_len) {
+    num_len <- num_len - 1
+    for (i in 0:num_len) {
+        noviCol <- col + i
+        print(paste("znak, ki bo dodan:", mat[row, noviCol]))
+
+        matId <- rbind(matId, c(row, noviCol, as.numeric(mat[row, noviCol])))
+    }
+
+    return(matId)
 }
 
 # funkcija preveri, če je indeks v matriki
