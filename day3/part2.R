@@ -1,37 +1,16 @@
 library(tidyverse)
 source("util.R")
 
-data_1 <- c("a", "b", "c", "d", "e", "3", "5", "*", "g", "h", "i", "j")
-data_2 <- c("1", "2", "c", "d", "e", "f", "*", "h", "i", "j", "k", "3")
-mat_1 <- matrix(data_1, 3, 4, byrow = T)
-mat_1
-mat <- matrix(data_2, 3, 4, byrow = T)
-mat
+# read file
+file <- readFile(filename = "testData.txt")
 
-# real test data
-# file <- readFile("testData.txt")
-# mat_1 <- makeDataMatrix(file)
+# matrika ki bo hranila podatke
+# za ta primer je matrika v redu, ker imamo enako dolge vrstice podatkov
+mat <- makeDataMatrix(file)
 
-# okej.
-# imamo matriko s podatki, sum in matriko z indeksi in vrednostmi števil (novo)
-# enako začnemo kot prvi del
-# loopamo dokler ne najdemo števila
-
-# ko najdemo število, dobimo celo število in dolžino
-# preverimo, ali je indeks števke v matriki indeksov
-# če ni, dodamo indeks v matriko in nadaljujemo z operacijami
-# če je, preskočimo število (j <- j + len)
-
-# loopamo okoli števila, da pogledamo, če je zvezda okoli njega
-# če najdemo zvezdo, je indeks zvezde nov pivot (novo)
-
-# loopamo okoli zvezde, da najdemo drugo število (čez 3x3 grid)
-# če najdemo število, preverimo, ali je indeks v matriki
-# če ni, ga dodamo v matriko in nastavimo indeks števila kot pivot
-# dobimo število glede na indeks začetne števke
-
+# matrika ki bo hranila števila, ki smo jih že videli, da preprečimo dvojno štetje
 mat_id <- matrix(0, nrow = 1, ncol = 3)
-colnames(mat_id) <- c("row", "col", "num")
+colnames(mat_id) <- c("row", "col", "num"); mat_id
 
 st1 <- 0
 st2 <- 0
@@ -46,6 +25,7 @@ for (i in seq_len(nrow(mat))) {
             # dobimo celo število (max 3 mestno)
             st1 <- dobiSt(mat, i, j)
             len1 <- nchar(st1)
+            print(st1)
 
             # preverimo, ali je indeks števke v matriki indeksov
             if (isInMat(mat = mat_id, row = i, col = j)) {
@@ -60,7 +40,7 @@ for (i in seq_len(nrow(mat))) {
                 startRow <- max(i - 1, 1)
                 endRow <- min(i + 1, nrow(mat))
                 startCol <- max(j - 1, 1)
-                endCol <- min(j + len, ncol(mat))
+                endCol <- min(j + len1, ncol(mat))
                 hasSymbol <- FALSE
 
                 # loopamo okoli števila
@@ -68,6 +48,7 @@ for (i in seq_len(nrow(mat))) {
                 for (row in startRow:endRow) {
                     for (col in startCol:endCol) {
                         znak <- mat[row, col]
+                        print(paste("znak", col, znak))
 
                         if (znak == "*") {
                             # loopamo okoli zvezde, da najdemo drugo število (čez 3x3 grid)
@@ -86,6 +67,7 @@ for (i in seq_len(nrow(mat))) {
                                     }
 
                                     drugiZnak <- mat[x, y]
+                                    print(paste("drugiznak", y, drugiZnak))
 
                                     # če najdemo število, preverimo, ali je indeks v matriki
                                     if (isDigit(drugiZnak)) {
@@ -99,6 +81,9 @@ for (i in seq_len(nrow(mat))) {
                                         } else {
                                             # če ni, ga dodamo v matriko in nastavimo indeks števila kot pivot
                                             mat_id <- addToMat(mat_id, x, y, st2)
+                                            # dodamo v sum
+                                            sum <- sum + (st1 * st2)
+                                            print(paste("sum", sum))
                                             j <- j + len2
                                         }
                                     }
@@ -131,7 +116,19 @@ mat_id
 # ker imamo sodo mnogo števil in moramo množiti dve ki ju najdemo skupaj,
 # lahko vsak i in i+1 element množimo skupaj in dodamo v sum
 sum <- 0
-for (i in seq(2, nrow(mat_id) - 1, 2)) {
-    sum <- sum + (mat_id[i, 3] * mat_id[i + 1, 3])
+for (i in seq(2,nrow(mat_id)-1,2)) {
+    sum <- sum + (mat_id[i, 3] * mat_id[i+1, 3])
 }
 sum
+
+      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+ [1,] "4"  "6"  "7"  "."  "."  "1"  "1"  "4"  "."  "."
+ [2,] "."  "."  "."  "*"  "."  "."  "."  "."  "."  "."
+ [3,] "."  "."  "3"  "5"  "."  "."  "6"  "3"  "3"  "."
+ [4,] "."  "."  "."  "."  "."  "."  "#"  "."  "."  "."
+ [5,] "6"  "1"  "7"  "*"  "."  "."  "."  "."  "."  "."
+ [6,] "."  "."  "."  "."  "."  "+"  "."  "5"  "8"  "."  
+ [7,] "."  "."  "5"  "9"  "2"  "."  "."  "."  "."  "."
+ [8,] "."  "."  "."  "."  "."  "."  "7"  "5"  "5"  "."
+ [9,] "."  "."  "."  "$"  "."  "*"  "."  "."  "."  "."
+[10,] "."  "6"  "6"  "4"  "."  "5"  "9"  "8"  "."  "."

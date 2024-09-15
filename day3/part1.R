@@ -2,7 +2,7 @@ library(tidyverse)
 source("util.R")
 
 # read file
-file <- readFile(filename = "mainData.txt")
+file <- readFile(filename = "data.txt")
 
 # matrika ki bo hranila podatke
 # za ta primer je matrika v redu, ker imamo enako dolge vrstice podatkov

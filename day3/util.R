@@ -25,6 +25,29 @@ makeDataMatrix <- \(vec) {
     return(mat)
 }
 
+# funkcija doda vrednost v matriko indeksov
+#   - mat
+#   - row
+#   - col
+addToMat <- \(mat, row, col, st) {
+    mat <- rbind(mat, c(row, col, st))
+    return(mat)
+}
+
+# funkcija preveri, če je indeks v matriki
+#   - mat
+#   - row
+#   - col
+isInMat <- \(mat, row, col) {
+    for (i in seq_len(nrow(mat))) {
+        if (mat[i, 1] == row && mat[i, 2] == col) {
+            return(TRUE)
+        }
+    }
+
+    return(FALSE)
+}
+
 # funcija vrne dolžino trenutnega števila
 # indeks naj bo vektor row in col v matriki
 # 	- matrika
