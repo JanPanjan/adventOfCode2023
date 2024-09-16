@@ -82,23 +82,21 @@ getNumLength <- \(matrika, row, col) {
     return(nchar(st))
 }
 
-# funkcija dobi število okoli zvezde
-dobiStOkoliZvezde <- \(mat, row, col) {
-    # dobili smo število, ampak ne vemo, če je levo več števk
-    # gremo levo, nato gremo desno
-    # ko najdemo znak, ki ni število, končamo
-    # NOTE: v tem primeru sovražim R, ker ne morem narediti reverse for loop.
-    # time to swtich to C al nekaj
+# funkcija dobi prvi digit števila (rekurzivno)
+#   - mat
+#   - row
+#   - col
+dobiPrviDigit <- \(mat, row, col) {
+    # NOTE: dobili smo število, ampak ne vemo, če je levo več števk
+    # gremo levo
+    # ko najdemo znak, ki ni število ali če je prvi col končamo
 
-    st <- mat[row,col]
-
-    # NOTE: klicali bomo rekurzivno
-    if (col == 1 || mat[row,col] != "\\d") {
-        return(as.numeric(st))
+    # base case
+    if (col == 1 || !grepl("\\d", mat[row, col - 1])) {
+        return(col)
     } else {
-        # WARN: potencialni bug. nism sure.
-        st <- paste0(dobiStOkoliZvezde(mat, row, {col-1}), st)
-        return(as.numeric(st))
+        # pomaknemo se eno levo
+        return(dobiPrviDigit(mat, row, col - 1))
     }
 }
 
