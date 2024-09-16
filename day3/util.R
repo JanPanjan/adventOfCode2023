@@ -97,8 +97,8 @@ dobiStOkoliZvezde <- \(mat, row, col) {
         return(as.numeric(st))
     } else {
         # WARN: potencialni bug. nism sure.
-        st <- paste0(dobiStOkoliZvezde(mat, row, {col-1}))
-        return(as.numeric(sf))
+        st <- paste0(dobiStOkoliZvezde(mat, row, {col-1}), st)
+        return(as.numeric(st))
     }
 }
 
