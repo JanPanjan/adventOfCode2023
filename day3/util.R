@@ -82,19 +82,13 @@ getNumLength <- \(matrika, row, col) {
     return(nchar(st))
 }
 
-# funckija dobi število
-# 	- matrika
-# 	- row
-# 	- col (start)
-# 	- number length
-getNum <- \(matrika, row, start, len) {
-    end <- start + len - 1
-
-    st <- matrika[row, start:end] %>%
-        paste0(collapse = "") %>%
-        as.numeric()
-
-    return(st)
+# funkcija dobi število okoli zvezde
+dobiStOkoliZvezde <- \(mat, row, col) {
+    # dobili smo število, ampak ne vemo, če je levo več števk
+    # gremo levo, nato gremo desno
+    # ko najdemo znak, ki ni število, končamo
+    # NOTE: v tem primeru sovražim R, ker ne morem narediti reverse for loop.
+    # time to swtich to C al nekaj
 }
 
 # funkcija dobi število v matriki

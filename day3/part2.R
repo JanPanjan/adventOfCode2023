@@ -2,10 +2,15 @@ library(tidyverse)
 source("util.R")
 
 file <- readFile(filename = "data.txt")
+file <- readFile(filename = "testData.txt")
 
 # matrika ki bo hranila podatke
 # za ta primer je matrika v redu, ker imamo enako dolge vrstice podatkov
 mat <- makeDataMatrix(file)
+mat[3,2] <- "5"
+mat[3,4] <- "."
+mat
+
 
 # matrika ki bo hranila števila, ki smo jih že videli, da preprečimo dvojno štetje
 mat_id <- matrix(0, nrow = 1, ncol = 3)
@@ -18,6 +23,7 @@ st2 <- 0
 # row in col gresta okoli števila, da najdeta *
 # x in y gresta okoli * da najdeta drugo število
 for (i in seq_len(nrow(mat))) {
+    if(i==4){break}
     print(" -----------------------")
     print("iščem prvo število")
     j <- 1
@@ -70,7 +76,7 @@ for (i in seq_len(nrow(mat))) {
 
                         if (znak == "*") {
                             print("našli zvezdo.")
-                            # loopamo okoli zvezde, da najdemo drugo število (čez 3x3 grid)
+                            # NOTE: loopamo okoli zvezde, da najdemo drugo število (čez 3x3 grid)
                             print("postavljanje vrednosti...")
                             start_x <- max(row - 1, 1)
                             end_x <- min(row + 1, nrow(mat))
@@ -89,44 +95,35 @@ for (i in seq_len(nrow(mat))) {
                                     drugiZnak <- mat[x, y]
                                     print(paste("znak '", mat[x,y], "'"))
 
-                                    # pogledamo, če je število v mat_id
-                                    if (isInMat(mat_id, x, y)) {
-                                        print(paste("skipamo iteracijo okoli zvezde. znak", mat[x,y], "je v matriki"))
-                                        next
-                                    }
 
-
-                                    # če najdemo število, preverimo, ali je indeks v matriki
+                                    # NOTE: če najdemo število, preverimo, ali je indeks v matriki
                                     if (isDigit(drugiZnak)) {
-                                        st2 <- dobiSt(mat, x, y)
+                                        st2 <- dobiSt(mat, x, y) # BUG: fix here
                                         len2 <- nchar(st2)
                                         print(paste("našel drugo število", st2, "na indeksu", x, ":", y ,"z dolžino", len2))
 
                                         if (isInMat(mat_id, x, y)) {
-                                            # preskočimo na naslednjo iteracijo
-                                            print(paste("število", st2, "je že v matriki indeksov. next"))
+                                            print(paste("skipamo iteracijo okoli zvezde. znak", mat[x,y], "je v matriki"))
                                             next
-                                            print("- - - - -- - -  -- - - - -")
-                                        } # isInMat drugo število
-                                        else {
-                                            # dodamo ga v matriko
-                                            print(paste("število", st2, "je novo število"))
-                                            print("$ $ $ $ $ $")
-                                            print("dodajanje vrednosti v matriko indeksov...")
-                                            mat_id <- addToMat(matId = mat_id, mat = mat, row = x, col = y, num_len = len2)
-                                            print("$ $ $ $ $ $")
-
-                                            # posodobimo vsoto s st1 in st2
-                                            print(paste("dodajam",st1,"in",st2,"v vsoto"))
-                                            print(paste("začetna vsota:", vsota))
-                                            vsota <- vsota + st1 * st2
-                                            print(paste("nova vsota:", vsota))
-
-                                            idInMat <- TRUE
-                                            j <- j + 1
-                                            # exitamo y
-                                            break
                                         }
+
+                                        # dodamo ga v matriko
+                                        print(paste("število", st2, "je novo število"))
+                                        print("$ $ $ $ $ $")
+                                        print("dodajanje vrednosti v matriko indeksov...")
+                                        mat_id <- addToMat(matId = mat_id, mat = mat, row = x, col = y, num_len = len2) # BUG: fix here (posledica dobiSt)
+                                        print("$ $ $ $ $ $")
+
+                                        # posodobimo vsoto s st1 in st2
+                                        print(paste("dodajam",st1,"in",st2,"v vsoto"))
+                                        print(paste("začetna vsota:", vsota))
+                                        vsota <- vsota + st1 * st2
+                                        print(paste("nova vsota:", vsota))
+
+                                        idInMat <- TRUE
+                                        j <- j + 1
+                                        # exitamo y
+                                        break
                                     } # isDigit drugo število
                                 } # y
                                 if (idInMat) {
@@ -179,7 +176,7 @@ vsota
       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
  [1,] "4"  "6"  "7"  "."  "."  "1"  "1"  "4"  "."  "."
  [2,] "."  "."  "."  "*"  "."  "."  "."  "."  "."  "."
- [3,] "."  "."  "3"  "5"  "."  "."  "6"  "3"  "3"  "."
+ [3,] "."  "5"  "3"  "."  "."  "."  "6"  "3"  "3"  "."
  [4,] "."  "."  "."  "."  "."  "."  "#"  "."  "."  "."
  [5,] "6"  "1"  "7"  "*"  "."  "."  "."  "."  "."  "."
  [6,] "."  "."  "."  "."  "."  "+"  "."  "5"  "8"  "."  
