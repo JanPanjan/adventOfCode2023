@@ -89,6 +89,17 @@ dobiStOkoliZvezde <- \(mat, row, col) {
     # ko najdemo znak, ki ni število, končamo
     # NOTE: v tem primeru sovražim R, ker ne morem narediti reverse for loop.
     # time to swtich to C al nekaj
+
+    st <- mat[row,col]
+
+    # NOTE: klicali bomo rekurzivno
+    if (col == 1 || mat[row,col] != "\\d") {
+        return(as.numeric(st))
+    } else {
+        # WARN: potencialni bug. nism sure.
+        st <- paste0(dobiStOkoliZvezde(mat, row, {col-1}))
+        return(as.numeric(sf))
+    }
 }
 
 # funkcija dobi število v matriki
