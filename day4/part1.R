@@ -37,58 +37,67 @@ winNums
 # primerjamo vsako število iz ourNums z vsakim iz winNums
 # če najdemo match, povečamo total (množimo z 2)
 # ker so winNums prekratki, jih moramo nafilati z 0 do dolžine ourNums
+
+# prvi vektor naj bo daljši vektor
 izenaci_vektorja <- \(prvi_vektor, drugi_vektor) {
-    max_len <- 0
-    cur_len <- 0
+    max_len <- length(drugi_vektor)
+    cur_len <- length(prvi_vektor)
 
-    if (length(prvi_vektor) > length(drugi_vektor)) {
-        max_len <- length(prvi_vektor)
-        cur_len <- length(drugi_vektor)
-
-        return(c(drugi_vektor, rep(0, max_len - cur_len)))
-    } else {
-        max_len <- length(drugi_vektor)
-        cur_len <- length(prvi_vektor)
-
-        return(c(prvi_vektor, rep(0, max_len - cur_len)))
-    }
+    return(c(prvi_vektor, rep(0, max_len - cur_len)))
 }
 
-map(ourNums, izenaci_vektorja, drugi_vektor = winNums[[1]]) -> winNums
+map(winNums, izenaci_vektorja, drugi_vektor = ourNums[[1]]) -> winNums
+winNums
 
 # hranimo nek total sum, ki se posodablja skozi vsako igro
 total <- 0
 
+ourNums
+winNums
 # primerjamo vrednosti
 # moramo it čez vsak element lista
-for (i in 1:length(winNums)) {
-	# hranimo nek temporary sum tock
-	tmp_sum <- 0.5
-	first_match <- FALSE
-	print(paste("card", i))
-	for (j in 1:length(winNums[[i]])) {
-		print(paste("j:", j))
-		#print(ourNums[[i]][j])
-		#print(winNums[[i]])
-		#print(ourNums[[i]][j] == winNums[[i]])
+for (i in seq_len(length(winNums))) {
+    # hranimo nek temporary sum tock
+    print("---------------------------------------")
+    print("setting tmp_sum to 0.5")
+    tmp_sum <- 0.5
+    first_match <- FALSE
+    print(paste("card", i))
 
-		ourNums[[i]][j] == winNums[[i]] -> l
+    for (j in seq_len(length(winNums[[i]]))) {
+        print(paste("j:", j))
+        # print(ourNums[[i]][j])
+        # print(winNums[[i]])
+        # print(ourNums[[i]][j] == winNums[[i]])
 
-		grep(x = l, pattern = TRUE) -> rezultat
-		if (length(rezultat) > 0) {
-			first_match <- TRUE
-			tmp_sum <- tmp_sum * 2
-		}
-		
-		print(paste("tmp_sum", tmp_sum))
-	}
+        print("comparing nums...")
+        print(ourNums[[i]][j])
+        print(winNums[[i]])
+        ourNums[[i]][j] == winNums[[i]] -> l
+        print(l)
 
-	if (!first_match) {
-		tmp_sum <- 1
-	}
-	total <- sum(total, tmp_sum)
-	print(paste("total", total))
+        # vrne vektor z indeksi
+        # če ni matcha, vrne prazen vektor
+        grep(x = l, pattern = TRUE) -> rezultat
+        print(paste("results:", rezultat))
+
+        if (length(rezultat) > 0) {
+            first_match <- TRUE
+            tmp_sum <- tmp_sum * 2
+        }
+
+        print(paste("tmp_sum", tmp_sum))
+    }
+
+    # če nismo matchali z nobenim, ne prištejemo nič
+    if (!first_match) {
+        print("match not found. setting tmp_sum to 0")
+        tmp_sum <- 0
+    }
+
+    total <- sum(total, tmp_sum)
+    print(paste("total", total))
 }
 
 write.table(total, "odgovorTest.txt", row.names = F, col.names = F)
-write.table(total, "odgovor1", row.names = F, col.names = F)
+write.table(total, "odgovor1.txt", row.names = F, col.names = F)
