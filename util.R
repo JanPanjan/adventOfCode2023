@@ -135,3 +135,12 @@ isSymbol <- function(niz) {
 isDigit <- \(znak) {
     return(str_detect(znak, "\\d"))
 }
+
+# funckija izenači dolžine vektorjev, tako da doda ničle na konec
+# prvi vektor naj bo krajši vektor
+izenaci_vektorja <- \(prvi_vektor, drugi_vektor) {
+    max_len <- length(drugi_vektor)
+    cur_len <- length(prvi_vektor)
+
+    return(c(prvi_vektor, rep(0, max_len - cur_len)))
+}
