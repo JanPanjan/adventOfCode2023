@@ -8,11 +8,11 @@ moramo ugotoviti kje je meja za držanje gumba.
 
 1. Izračunamo za vsako sekundo kolikšen distanceTravelled ima (glej dol).
 2. Izberemo tiste, ki so večje od rekorda
-3. Dobimo length možnosti
+3. Dobimo length od možnosti
 
 ## Algoritem
 
-npr. imamo 4 sekunde. nikoli ne držimo 0 ali 4 sekunde.
+npr. imamo [time = 4] sekunde. nikoli ne držimo 0 ali 4 sekunde.
 izognemo se [0] in [time] vrednostim.
 
 - 1 s -> 3m/s

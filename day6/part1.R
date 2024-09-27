@@ -8,3 +8,13 @@ df <- parseData(file)
 
 # do something
 # ...
+res <- c()
+
+for (i in 1:nrow(df)) {
+    distances <- getDistances(df[i, 1])
+    kombinacije <- getKombinacije(df[i, 2], distances)
+
+    res <- c(res, kombinacije)
+}
+
+writeText(prod(res), "odgovor1.txt")
