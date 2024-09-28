@@ -158,3 +158,41 @@ izenaci_vektorja <- \(prvi_vektor, drugi_vektor) {
     return(c(prvi_vektor, rep(0, max_len - cur_len)))
 }
 
+#' Funckija za izračun razdalj v day 6 part 1.
+#'
+#' @param time int, ki predstavlja čas trenutne dirke
+#' @returns numeric vector razdalj za vsak čas
+getDistances <- \(time) {
+    dst_trv <- 1:time
+
+    for (i in 1:time) {
+        dst_trv[i] <- dst_trv[i] * (time - i)
+    }
+
+    return(dst_trv)
+}
+
+#' funkcija dobi razdaljo za part2 day 6
+#'
+#' @param cur_time (integer) čas za katerega hočeš izračunat razdaljo
+#' @param preostaliCas (integer) od maksimalnega časa. razlika med max_time in cur_time
+getDistance <- \(cur_time, preostaliCas) {
+    return(cur_time * preostaliCas))
+}
+
+#' Funkcija za izračun kombinacij iz day 6 part 1
+#'
+#' Dobi vse vrednosti iz distances, ki so večje kot rekord
+#'
+#' @param rekord integer
+#' @param distances numeric vektor
+#' @param value boolean, ali naj vrne vrednosti (TRUE), ali število vrednosti (FALSE)
+getKombinacije <- \(rekord, distances, value = FALSE) {
+    ids <- which(distances > rekord)
+
+    ifelse(
+        value,
+        return(distances[ids]),
+        return(length(ids))
+    )
+}

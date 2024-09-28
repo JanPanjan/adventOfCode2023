@@ -22,7 +22,20 @@ extractNums <- \(str_vec) {
     return(out)
 }
 
-#' data parse za day 6 podatke
+extractNum <- \(str_vec) {
+    out <- sub(".*:", "", str_vec) %>%
+        gsub("\\s+", " ", .) %>%
+        strsplit(" ") %>%
+        unlist() %>%
+        paste0(collapse = "") %>%
+        as.numeric()
+
+    return(out)
+}
+
+#' data parse za day 6 part 1 podatke
+#'
+#' @param file string vector
 parseData <- \(file) {
     time <- extractNums(file[1])
     distance <- extractNums(file[2])
@@ -30,4 +43,17 @@ parseData <- \(file) {
 
     print(df)
     return(df)
+}
+
+#' data parse za day 6 part 2 podatke
+#'
+#' @param file string vector
+parseDataAgain <- \(file) {
+    data <- list(
+        time = extractNum(file[1]),
+        distance = extractNum(file[2])
+    )
+
+    print(data)
+    return(data)
 }
