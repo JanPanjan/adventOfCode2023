@@ -11,20 +11,6 @@ data <- parseDataAgain(file)
 # ...
 
 # če najdemo en border, najdemo drugega avtomatsko
-findDistances <- \(data) {
-    meja <- 0
-
-    for (i in 1:data$time) {
-        dst <- i * (data$time - i)
-
-        if (dst > data$distance) {
-            meja <- i
-            break
-        }
-    }
-
-    return(meja)
-}
 
 findDistances(data) -> meja
 

@@ -177,7 +177,24 @@ getDistances <- \(time) {
 #' @param cur_time (integer) čas za katerega hočeš izračunat razdaljo
 #' @param preostaliCas (integer) od maksimalnega časa. razlika med max_time in cur_time
 getDistance <- \(cur_time, preostaliCas) {
-    return(cur_time * preostaliCas))
+    return(cur_time * preostaliCas)
+}
+
+#' funkcija dobi prvo razdaljo, ki premaga rekord (day 6)
+#'
+#' @param data list s podatkoma o času in razdalji (glej day 6 README.md za podrobnosti)
+#' @returns integer, ki predstavlja čas, pri katerem premagamo rekord
+findDistances <- \(data) {
+    for (i in 1:data$time) {
+        dst <- i * (data$time - i)
+
+        if (dst > data$distance) {
+            return(i)
+        }
+    }
+
+    # ...
+    return(NA)
 }
 
 #' Funkcija za izračun kombinacij iz day 6 part 1
