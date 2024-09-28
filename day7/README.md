@@ -16,10 +16,11 @@ You've already assumed it'll be your job to figure out why the parts stopped whe
 
 Because the journey will take a few days, she offers to teach you the game of Camel Cards. Camel Cards is sort of similar to poker except it's designed to be easier to play while riding a camel.
 
-In Camel Cards, you get a list of hands, and your goal is to order them based on the strength of each hand. A hand consists of five cards labeled one of A, K, Q, J, T, 9, 8, 7, 6, 5, 4, 3, or 2. The relative strength of each card follows this order, where A is the highest and 2 is the lowest.
+In Camel Cards, you get a list of hands, and your goal is to order them based on the strength of each hand. A hand consists of five cards labeled one of `A, K, Q, J, T, 9, 8, 7, 6, 5, 4, 3, or 2`. The relative strength of each card follows this order, where A is the highest and 2 is the lowest.
 
 Every hand is exactly one type. From strongest to weakest, they are:
 
+```
 Five of a kind, where all five cards have the same label: AAAAA
 Four of a kind, where four cards have the same label and one card has a different label: AA8AA
 Full house, where three cards have the same label, and the remaining two cards share a different label: 23332
@@ -28,6 +29,7 @@ Two pair, where two cards share one label, two other cards share a second label,
 One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
 High card, where all cards' labels are distinct: 23456
 Hands are primarily ordered based on type; for example, every full house is stronger than any three of a kind.
+```
 
 If two hands have the same type, a second ordering rule takes effect. Start by comparing the first card in each hand. If these cards are different, the hand with the stronger first card is considered stronger. If the first card in each hand have the same label, however, then move on to considering the second card in each hand. If they differ, the hand with the higher second card wins; otherwise, continue with the third card in each hand, then the fourth, then the fifth.
 
