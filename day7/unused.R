@@ -1,4 +1,4 @@
-#' funkcija prevede vse karte v njihovo moč (torej A = 1,... 3 = 13,...)
+#' funkcija prevede vse karte v njihovo moč (torej A = 13,... 3 = 3,...)
 #' @param hand string roka kart iz podatkov
 #' @returns numeric vektor
 card_strength <- \(hand){

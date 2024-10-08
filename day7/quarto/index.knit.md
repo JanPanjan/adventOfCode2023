@@ -1,9 +1,29 @@
-source("part1.R")
+---
+author: "jan panjan"
+---
 
+
+# Packages and util functions
+
+
+::: {.cell}
+
+```{.r .cell-code}
 library(tidyverse)
-source("C:/Users/joene/Documents/progAAAAAAA/adventOfCode2023/util.R", chdir = TRUE, echo = TRUE)
+source("C:/Users/joene/Documents/progAAAAAAA/adventOfCode2023/util.R", chdir = TRUE)
+```
+:::
 
-file <- readFile("test.txt") %>%
+
+# Parsing data
+
+Naredimo data frame it podatkov v `test.txt`.
+
+
+::: {.cell}
+
+```{.r .cell-code}
+file <- readFile("C:/Users/joene/Documents/progAAAAAAA/adventOfCode2023/day7/test.txt") %>%
     as.data.frame() %>%
     separate(col = ".", into = c("hand", "bid")) %>%
     {
@@ -11,15 +31,45 @@ file <- readFile("test.txt") %>%
         .
     }
 file
+```
 
-# AAAAA - five of a kind
-# AAAAB - four of a kind
-# AAABC - three od a kind
-# AAABB - full house
-# AABBC - two pair
-# AABCD - one pair
-# ABCDE - high card
+::: {.cell-output .cell-output-stdout}
 
+```
+   hand bid
+1 32T3K 765
+2 T55J5 684
+3 KK677  28
+4 KTJJT 220
+5 QQQJA 483
+```
+
+
+:::
+:::
+
+
+S funkcijami bomo uredili naš data frame do konca. Najprej bomo izračunali
+kolikokrat se ponovi ista karta v roki, nato dobili tip roke.
+
+Obstaja 7 tipov:
+
+1. five of a kind
+2. four of a kind
+3. three of a kind
+4. full house
+5. two pair
+6. one pair
+7. high card
+
+:::panel-tabset
+
+# init_cards
+
+
+::: {.cell}
+
+```{.r .cell-code}
 #' naredi vektor kart, da bomo lahko prešteli frekvence
 #'
 #' @param hand string s kartami
@@ -29,26 +79,42 @@ init_cards <- \(hand) {
     names(cards) <- strsplit(hand, "") %>% unlist()
     cards
 }
+```
+:::
 
+
+# calc_occurences
+
+
+::: {.cell}
+
+```{.r .cell-code}
 #' funkcija prešteje kolikokrat se pojavi posamezna karta
 #' ohrani samo vektor unikatnih kart s ponovitvami
 #'   npr. lahko se pojavita 2 trojki - ohrani samo eno v rezultatu
 
 #' @param cards character vector
-#' @returns cleaned named vector frekvenc
+#' @return cleaned named vector frekvenc
 calc_occurences <- \(cards) {
     for (i in 1:length(cards)) {
         cards[names(cards)[i]] <- cards[names(cards)[i]] + 1
     }
     cards[unique(names(cards))]
 }
+```
+:::
 
-# kako dobit tip karte...
 
+# card_type
+
+
+::: {.cell}
+
+```{.r .cell-code}
 #' funkcija izračuna tip roke glede na karte v roki.
 
 #' @param frekvence vektor s frekvencami kart (rezultat calc_occurences)
-#' @returns integer, ki predstavlja tip karte. najmočnejši tip ima
+#' @return integer, ki predstavlja tip karte. najmočnejši tip ima
 #' vrednost 7 (five of a kind), medtem ko najšibkejši 1 (high card).
 card_type <- \(frekvence) {
     case_when(
@@ -77,7 +143,16 @@ card_type <- \(frekvence) {
         .default = 0
     )
 }
+```
+:::
 
+
+Zdaj to pipamo in posodobimo naš dataframe.
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # dobimo frekvence kart
 file <- map(simplify(select(file, hand)), \(hand){
     init_cards(hand) %>%
@@ -91,24 +166,32 @@ file <- map(simplify(select(file, hand)), \(hand){
         .
     } %>%
     mutate(file, type = .) %>%
-    unnest(., type) %>%
-    group_by(type) %>%
-    arrange(type)
+    unnest(., type)
 
-# zdaj moramo najt katere karte imajo isti tip in jih primerjat med sabo
-# insert sort?...
-type_3 <- filter(file, type == 3)
-type_3
+file %>%
+    group_by(type)
+```
 
-card_strengths <- unlist(strsplit("23456789TJQKA", ""))
-match("T", card_strengths)
-match("K", card_strengths)
+::: {.cell-output .cell-output-stdout}
 
-# vsaki karti dodelimo vrednost glede na njeno moč
-match(unlist(strsplit("KK677", "")), card_strengths) -> r1
-match(unlist(strsplit("KTJJT", "")), card_strengths) -> r2
+```
+# A tibble: 5 × 3
+# Groups:   type [3]
+  hand    bid  type
+  <chr> <dbl> <dbl>
+1 32T3K   765     2
+2 T55J5   684     4
+3 KK677    28     3
+4 KTJJT   220     3
+5 QQQJA   483     4
+```
 
-# prva vrednost, ki se razlikuje, vrnemo tisti vektor, ki ima večjo število
-# dobimo torej 12 12 5 6 6 in 12 9 10 10 9
-# 12 in 12, 12 in 9
-# ker ima prvi vektor 12 in drugi 9 in 12 > 9, vrnemo prvi hand
+
+:::
+:::
+
+
+:::
+
+Zdaj moramo najt katere karte imajo isti tip in jih primerjat med sabo
+
