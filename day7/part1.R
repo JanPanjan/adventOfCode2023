@@ -12,37 +12,42 @@ file <- map(simplify(select(file, hand)), \(hand){
         setNames(NULL)
 }) %>%
     # dobimo tipe od hands
-    map(., card_type) %>%
+    map(., card_type) %>% 
     {
         names(.) <- NULL
         .
     } %>%
     mutate(file, type = .) %>%
-    unnest(., type) %>%
-    group_by(type) %>%
-    arrange(type)
+    unnest(., type)
 file
 
 # zdaj moramo najt katere karte imajo isti tip in jih primerjat med sabo
-# insert sort?...
-type_3 <- filter(card_freq, type == 3)
-type_3
 
-card_strengths <- unlist(strsplit("23456789TJQKA", ""))
-match("T", card_strengths)
-match("K", card_strengths)
-
-# vsaki karti dodelimo vrednost glede na njeno moč
-match(unlist(strsplit("KK677", "")), card_strengths) -> r1
-match(unlist(strsplit("KTJJT", "")), card_strengths) -> r2
-r1
-r2
+get_card_strengths <- \(hand) {
+    card_strengths <- unlist(strsplit("23456789TJQKA", ""))
+    match(unlist(strsplit(hand, "")), card_strengths)
+}
 
 # prva vrednost, ki se razlikuje, vrnemo tisti vektor, ki ima večjo število
 # dobimo torej 12 12 5 6 6 in 12 9 10 10 9
 # 12 in 12, 12 in 9
 # ker ima prvi vektor 12 in drugi 9 in 12 > 9, vrnemo prvi hand
-#
-# uporabimo insertion sort >:D
+file$card_strengths <- map(file$hand, get_card_strengths)
 
-# better_hand()
+file %>% 
+    group_by(type) %>% 
+    arrange(type)
+
+# zdaj imamo urejen data frame
+# prvi element je najmočnejša roka
+# zadnji element je najšibkejša roka
+# moramo dobiti še rezultat:
+#   row number × bid amount
+file
+rows <- 1:nrow(file)
+prod <- unlist(select(file, bid)) * rows
+prod[3]/3
+1932/4
+3420/5
+
+writeText(result, "odgovorTest.txt")
