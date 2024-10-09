@@ -2,8 +2,7 @@ library(tidyverse)
 source("C:/Users/joene/Documents/progAAAAAAA/adventOfCode2023/util.R", chdir = TRUE)
 source("util.R")
 
-file <- parseData("test.txt")
-file
+file <- parseData("data.txt")
 
 # dobimo frekvence kart
 file <- map(simplify(select(file, hand)), \(hand){
@@ -19,35 +18,29 @@ file <- map(simplify(select(file, hand)), \(hand){
     } %>%
     mutate(file, type = .) %>%
     unnest(., type)
-file
 
-# zdaj moramo najt katere karte imajo isti tip in jih primerjat med sabo
+# v card_strengths shranimo števila, ki predstavljajo moč rok
+file$card_strengths <- map(file$hand, get_card_strengths) %>% 
+    # izenačimo števila, da bo potem sortiralo pravilno
+    map(., \(card){ifelse(nchar(card) == 1, paste0(0, card), paste0(card)) %>% 
+            paste(., collapse = "") %>% 
+            as.numeric()
+        }) %>% 
+    unlist() %>% 
+    {
+        file$card_strengths <- .
+        .
+    }
 
-get_card_strengths <- \(hand) {
-    card_strengths <- unlist(strsplit("23456789TJQKA", ""))
-    match(unlist(strsplit(hand, "")), card_strengths)
-}
-
-# prva vrednost, ki se razlikuje, vrnemo tisti vektor, ki ima večjo število
-# dobimo torej 12 12 5 6 6 in 12 9 10 10 9
-# 12 in 12, 12 in 9
-# ker ima prvi vektor 12 in drugi 9 in 12 > 9, vrnemo prvi hand
-file$card_strengths <- map(file$hand, get_card_strengths)
-
-file %>% 
+# uredimo po velikosti znotraj skupin
+file <- file %>% 
     group_by(type) %>% 
-    arrange(type)
+    arrange(card_strengths, .by_group = T)
 
-# zdaj imamo urejen data frame
-# prvi element je najmočnejša roka
-# zadnji element je najšibkejša roka
-# moramo dobiti še rezultat:
-#   row number × bid amount
-file
-rows <- 1:nrow(file)
-prod <- unlist(select(file, bid)) * rows
-prod[3]/3
-1932/4
-3420/5
+# dobimo še zadnji izračun
+# (bid * rank) 765 * 1 + 220 * 2 + 28 * 3 + 684 * 4 + 483 * 5
+# ker je rank == row number, lahko vsak bid množimo s corresponding row number
+prod <- {file$bid * 1:nrow(file)} %>% sum()
 
-writeText(result, "odgovorTest.txt")
+writeText(prod, "odgovor1.txt")
+write.table(file, "part1-df.txt")

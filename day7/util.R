@@ -1,5 +1,8 @@
-parseData <- \(file) {
-    readFile(file) %>%
+#' prebere podatke in naredi data frame (day 7)
+#' @param filename path do datoteke s podatki
+#' @returns data frame
+parseData <- \(filename) {
+    readFile(filename) %>%
     as.data.frame() %>%
     separate(col = ".", into = c("hand", "bid")) %>%
     {
@@ -9,7 +12,6 @@ parseData <- \(file) {
 }
 
 #' naredi vektor kart, da bomo lahko prešteli frekvence
-#'
 #' @param hand string s kartami
 #' @returns named character vector
 init_cards <- \(hand) {
@@ -21,7 +23,6 @@ init_cards <- \(hand) {
 #' funkcija prešteje kolikokrat se pojavi posamezna karta
 #' ohrani samo vektor unikatnih kart s ponovitvami
 #'   npr. lahko se pojavita 2 trojki - ohrani samo eno v rezultatu
-
 #' @param cards character vector
 #' @returns cleaned named vector frekvenc
 calc_occurences <- \(cards) {
@@ -32,7 +33,6 @@ calc_occurences <- \(cards) {
 }
 
 #' funkcija izračuna tip roke glede na karte v roki.
-
 #' @param frekvence vektor s frekvencami kart (rezultat calc_occurences)
 #' @returns integer, ki predstavlja tip karte. najmočnejši tip ima
 #' vrednost 7 (five of a kind), medtem ko najšibkejši 1 (high card).
@@ -56,21 +56,11 @@ card_type <- \(frekvence) {
     )
 }
 
-#' funkcija preveri katera roka je močnejša
-#' preveri karto po karto
-#' 
-#' @param hand1 prva roka
-#' @param hand2 druga roka
-#' @returns character vector hand, ki je močnejši. če sta enako močni,
-#' vrne hand1.
-better_hand <- \(hand1, hand2) {
-    for (i in 1:5) {
-        if (hand1[i] > hand2[i]) {
-            return(hand1)
-        } else if (hand1[i] < hand2[i]) {
-            return(hand2)
-        }
-    }
-    # vse karte so enake. ohranimo vrstni red
-    return(hand1)
+#' funkcija pripiše karti določeno moč glede na podano lestvico
+#' @param hand string
+#' @returns numeric vector
+get_card_strengths <- \(hand) {
+    card_strengths <- unlist(strsplit("23456789TJQKA", ""))
+    match(unlist(strsplit(hand, "")), card_strengths)
 }
+
