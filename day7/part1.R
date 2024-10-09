@@ -26,11 +26,7 @@ file$card_strengths <- map(file$hand, get_card_strengths) %>%
             paste(., collapse = "") %>% 
             as.numeric()
         }) %>% 
-    unlist() %>% 
-    {
-        file$card_strengths <- .
-        .
-    }
+    unlist()
 
 # uredimo po velikosti znotraj skupin
 file <- file %>% 
