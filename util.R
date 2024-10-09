@@ -13,7 +13,6 @@ readFile <- \(filename) {
         unlist() |>
         setNames(NULL)
 
-    print(file)
     return(file)
 }
 

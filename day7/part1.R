@@ -1,82 +1,9 @@
-source("part1.R")
-
 library(tidyverse)
-source("C:/Users/joene/Documents/progAAAAAAA/adventOfCode2023/util.R", chdir = TRUE, echo = TRUE)
+source("C:/Users/joene/Documents/progAAAAAAA/adventOfCode2023/util.R", chdir = TRUE)
+source("util.R")
 
-file <- readFile("test.txt") %>%
-    as.data.frame() %>%
-    separate(col = ".", into = c("hand", "bid")) %>%
-    {
-        .[, "bid"] <- as.numeric(.[, "bid"])
-        .
-    }
+file <- parseData("test.txt")
 file
-
-# AAAAA - five of a kind
-# AAAAB - four of a kind
-# AAABC - three od a kind
-# AAABB - full house
-# AABBC - two pair
-# AABCD - one pair
-# ABCDE - high card
-
-#' naredi vektor kart, da bomo lahko prešteli frekvence
-#'
-#' @param hand string s kartami
-#' @returns named character vector
-init_cards <- \(hand) {
-    cards <- rep(0, 5)
-    names(cards) <- strsplit(hand, "") %>% unlist()
-    cards
-}
-
-#' funkcija prešteje kolikokrat se pojavi posamezna karta
-#' ohrani samo vektor unikatnih kart s ponovitvami
-#'   npr. lahko se pojavita 2 trojki - ohrani samo eno v rezultatu
-
-#' @param cards character vector
-#' @returns cleaned named vector frekvenc
-calc_occurences <- \(cards) {
-    for (i in 1:length(cards)) {
-        cards[names(cards)[i]] <- cards[names(cards)[i]] + 1
-    }
-    cards[unique(names(cards))]
-}
-
-# kako dobit tip karte...
-
-#' funkcija izračuna tip roke glede na karte v roki.
-
-#' @param frekvence vektor s frekvencami kart (rezultat calc_occurences)
-#' @returns integer, ki predstavlja tip karte. najmočnejši tip ima
-#' vrednost 7 (five of a kind), medtem ko najšibkejši 1 (high card).
-card_type <- \(frekvence) {
-    case_when(
-        # five of a kind. ni unikatnih kart
-        length(frekvence) == 1 ~ 7,
-
-        # four of a kind. imamo karto ki se ponovi 4x
-        max(frekvence) == 4 ~ 6,
-
-        # full house. imamo dve unikatni karti
-        length(frekvence) == 2 ~ 5,
-
-        # three of a kind. imamo karto ki se ponovi 3x
-        max(frekvence) == 3 ~ 4,
-
-        # two pair. imamo 3 unikatne karte
-        length(frekvence) == 3 ~ 3,
-
-        # one pair. imamo 4 unikatne karte
-        length(frekvence) == 4 ~ 2,
-
-        # high card. vse karte so unikatne
-        length(frekvence) == 5 ~ 1,
-
-        # safety
-        .default = 0
-    )
-}
 
 # dobimo frekvence kart
 file <- map(simplify(select(file, hand)), \(hand){
@@ -94,10 +21,11 @@ file <- map(simplify(select(file, hand)), \(hand){
     unnest(., type) %>%
     group_by(type) %>%
     arrange(type)
+file
 
 # zdaj moramo najt katere karte imajo isti tip in jih primerjat med sabo
 # insert sort?...
-type_3 <- filter(file, type == 3)
+type_3 <- filter(card_freq, type == 3)
 type_3
 
 card_strengths <- unlist(strsplit("23456789TJQKA", ""))
@@ -107,8 +35,14 @@ match("K", card_strengths)
 # vsaki karti dodelimo vrednost glede na njeno moč
 match(unlist(strsplit("KK677", "")), card_strengths) -> r1
 match(unlist(strsplit("KTJJT", "")), card_strengths) -> r2
+r1
+r2
 
 # prva vrednost, ki se razlikuje, vrnemo tisti vektor, ki ima večjo število
 # dobimo torej 12 12 5 6 6 in 12 9 10 10 9
 # 12 in 12, 12 in 9
 # ker ima prvi vektor 12 in drugi 9 in 12 > 9, vrnemo prvi hand
+#
+# uporabimo insertion sort >:D
+
+# better_hand()
