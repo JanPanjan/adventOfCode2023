@@ -20,7 +20,7 @@ file <- map(simplify(select(file, hand)), \(hand){
     unnest(., type)
 
 # v card_strengths shranimo števila, ki predstavljajo moč rok
-file$card_strengths <- map(file$hand, get_card_strengths) %>% 
+file$card_strengths <- map(file$hand, get_card_strengths_p1) %>% 
     # izenačimo števila, da bo potem sortiralo pravilno
     map(., \(card){ifelse(nchar(card) == 1, paste0(0, card), paste0(card)) %>% 
             paste(., collapse = "") %>% 
