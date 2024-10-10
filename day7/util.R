@@ -25,10 +25,11 @@ init_cards <- \(hand) {
 #'   npr. lahko se pojavita 2 trojki - ohrani samo eno v rezultatu
 #' @param cards character vector
 #' @returns cleaned named vector frekvenc
-calc_occurences <- \(cards) {
+calc_occurences <- \(cards, part_two = F) {
     for (i in 1:length(cards)) {
         cards[names(cards)[i]] <- cards[names(cards)[i]] + 1
     }
+
     cards[unique(names(cards))]
 }
 
@@ -59,8 +60,26 @@ card_type <- \(frekvence) {
 #' funkcija pripiše karti določeno moč glede na podano lestvico
 #' @param hand string
 #' @returns numeric vector
-get_card_strengths <- \(hand) {
-    card_strengths <- unlist(strsplit("23456789TJQKA", ""))
+get_card_strengths <- \(hand, part_two = FALSE) {
+    card_strengths <- ifelse(
+        part_two == TRUE,
+        yes = unlist(strsplit("J23456789TQKA", "")),
+        no = unlist(strsplit("23456789TJQKA", ""))
+    )
     match(unlist(strsplit(hand, "")), card_strengths)
 }
 
+
+# zamenjamo jokerje
+map_jokers <- \(hand) {
+    if ("J" %in% names(hand) & length(hand) > 1) {
+        # dobimo karto ki se ponovi največkrat in ni joker
+        card_to_replace <- hand[names(hand) != "J"] %>% 
+            { names(.[. == max(.)]) }
+        # zamenjamo jokerje s to karto
+        names(hand) <- gsub("J", card_to_replace, names(hand))
+        return(hand)
+    } else {
+        return(hand)
+    }
+}

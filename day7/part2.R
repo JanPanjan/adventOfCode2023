@@ -2,22 +2,30 @@ library(tidyverse)
 source("C:/Users/joene/Documents/progAAAAAAA/adventOfCode2023/util.R", chdir = TRUE)
 source("util.R")
 
-file <- parseData("data.txt")
+file <- parseData("test.txt")
+df <- file
 
 # dobimo frekvence kart
-file <- map(simplify(select(file, hand)), \(hand){
+# NOTE: fix!
+frekvence <- map(simplify(select(file, hand)), \(hand){
     init_cards(hand) %>%
-        calc_occurences() %>%
-        setNames(NULL)
-}) %>%
-    # dobimo tipe od hands
-    map(., card_type) %>% 
+        calc_occurences(., part_two = T) %>% 
+        map_jokers() %>% 
+        tapply(., names(.), sum) # BUG: uniči order vrednosti!!!!!!! not ok
+})
+
+
+
+
+# dobimo tipe od hands
+map(frekvence, card_type) %>% 
     {
         names(.) <- NULL
         .
     } %>%
     mutate(file, type = .) %>%
     unnest(., type)
+
 
 # v card_strengths shranimo števila, ki predstavljajo moč rok
 file$card_strengths <- map(file$hand, get_card_strengths) %>% 
@@ -38,5 +46,5 @@ file <- file %>%
 # ker je rank == row number, lahko vsak bid množimo s corresponding row number
 prod <- {file$bid * 1:nrow(file)} %>% sum()
 
-writeText(prod, "odgovor1.txt")
-write.table(file, "part1-df.txt")
+writeText(prod, "odgovor2.txt")
+write.table(file, "part2-df.txt")
