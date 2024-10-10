@@ -2,23 +2,18 @@ library(tidyverse)
 source("C:/Users/joene/Documents/progAAAAAAA/adventOfCode2023/util.R", chdir = TRUE)
 source("util.R")
 
-file <- parseData("test.txt")
-df <- file
+file <- parseData("data.txt")
 
 # dobimo frekvence kart
-# NOTE: fix!
 frekvence <- map(simplify(select(file, hand)), \(hand){
     init_cards(hand) %>%
         calc_occurences(., part_two = T) %>% 
         map_jokers() %>% 
-        tapply(., names(.), sum) # BUG: uniči order vrednosti!!!!!!! not ok
+        agg_card_freq()
 })
 
-
-
-
 # dobimo tipe od hands
-map(frekvence, card_type) %>% 
+file <- map(frekvence, card_type) %>% 
     {
         names(.) <- NULL
         .
@@ -26,17 +21,16 @@ map(frekvence, card_type) %>%
     mutate(file, type = .) %>%
     unnest(., type)
 
-
 # v card_strengths shranimo števila, ki predstavljajo moč rok
-file$card_strengths <- map(file$hand, get_card_strengths) %>% 
-    # izenačimo števila, da bo potem sortiralo pravilno
+file$card_strengths <- map(file$hand, get_card_strengths_p2) %>% 
+    # izenačimo števila, da bo potem sortiralo pravilno (=?)
     map(., \(card){ifelse(nchar(card) == 1, paste0(0, card), paste0(card)) %>% 
             paste(., collapse = "") %>% 
             as.numeric()
         }) %>% 
     unlist()
 
-# uredimo po velikosti znotraj skupin
+# uredimo po velikosti znotraj tipov
 file <- file %>% 
     group_by(type) %>% 
     arrange(card_strengths, .by_group = T)

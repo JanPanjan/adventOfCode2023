@@ -57,29 +57,48 @@ card_type <- \(frekvence) {
     )
 }
 
-#' funkcija pripiše karti določeno moč glede na podano lestvico
+#' funkcija pripiše karti določeno moč glede na podano lestvico.
 #' @param hand string
 #' @returns numeric vector
-get_card_strengths <- \(hand, part_two = FALSE) {
-    card_strengths <- ifelse(
-        part_two == TRUE,
-        yes = unlist(strsplit("J23456789TQKA", "")),
-        no = unlist(strsplit("23456789TJQKA", ""))
-    )
+get_card_strengths_p1 <- \(hand) {
+    card_strengths <- unlist(strsplit("23456789TJQKA", ""))
     match(unlist(strsplit(hand, "")), card_strengths)
 }
 
+#' funkcija pripiše karti določeno moč glede na podano lestvico.
+#' poba tretira kot jokerja v tem primeru.
+#' @param hand string
+#' @returns numeric vector
+get_card_strengths_p2 <- \(hand) {
+    card_strengths <- unlist(strsplit("J23456789TQKA", ""))
+    match(unlist(strsplit(hand, "")), card_strengths)
+}
 
-# zamenjamo jokerje
+#' funkcija zamenja jokerje s karto, ki se v roki največkrat ponovi.
+#' @param hand named vector frekvenc kart
+#' @returns popravljen named vector. če ni jokerjev, vrne hand
 map_jokers <- \(hand) {
     if ("J" %in% names(hand) & length(hand) > 1) {
-        # dobimo karto ki se ponovi največkrat in ni joker
         card_to_replace <- hand[names(hand) != "J"] %>% 
-            { names(.[. == max(.)]) }
-        # zamenjamo jokerje s to karto
+            {
+                names(.[. == max(.)]) 
+            }
+        
         names(hand) <- gsub("J", card_to_replace, names(hand))
         return(hand)
     } else {
         return(hand)
     }
+}
+
+#' funkcija združi vrednosti v hand vektorju pod istim imenom.
+#' @param hand named numeric vector
+#' @returns urejen named numeric vector
+agg_card_freq <- \(hand) {
+    df <- data.frame(name = names(hand), value = hand)
+    aggregated <- aggregate(value ~ name, df, sum)
+    ordered_names <- unique(df$name)
+    result <- setNames(aggregated$value, aggregated$name)[ordered_names]
+
+    return(result)
 }
