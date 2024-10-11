@@ -7,7 +7,7 @@ file <- parseData("data.txt")
 # dobimo frekvence kart
 frekvence <- map(simplify(select(file, hand)), \(hand){
     init_cards(hand) %>%
-        calc_occurences(., part_two = T) %>% 
+        calc_occurences() %>% 
         map_jokers() %>% 
         agg_card_freq()
 })
