@@ -5,15 +5,15 @@ source("util.R")
 file <- parseData("data.txt")
 
 # dobimo frekvence kart
-frekvence <- map(simplify(select(file, hand)), \(hand){
+frekvence <- map(simplify(select(file, hand)), \(hand) {
     init_cards(hand) %>%
-        calc_occurences(., part_two = T) %>% 
-        map_jokers() %>% 
+        calc_occurences(., part_two = T) %>%
+        map_jokers() %>%
         agg_card_freq()
 })
 
 # dobimo tipe od hands
-file <- map(frekvence, card_type) %>% 
+file <- map(frekvence, card_type) %>%
     {
         names(.) <- NULL
         .
