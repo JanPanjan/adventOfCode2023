@@ -25,7 +25,7 @@ init_cards <- \(hand) {
 #'   npr. lahko se pojavita 2 trojki - ohrani samo eno v rezultatu
 #' @param cards character vector
 #' @returns cleaned named vector frekvenc
-calc_occurences <- \(cards, part_two = F) {
+calc_occurences <- \(cards) {
     for (i in 1:length(cards)) {
         cards[names(cards)[i]] <- cards[names(cards)[i]] + 1
     }

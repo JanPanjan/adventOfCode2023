@@ -2,7 +2,7 @@ library(tidyverse)
 source("C:/Users/joene/Documents/progAAAAAAA/adventOfCode2023/util.R", chdir = TRUE)
 source("util.R")
 
-file <- parseData("data.txt")
+file <- parseData("data-main.txt")
 
 # dobimo frekvence kart
 file <- map(simplify(select(file, hand)), \(hand){
